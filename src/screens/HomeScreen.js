@@ -9,8 +9,9 @@ import {
 } from 'react-native';
 
 import { getRecipes } from '../services/recipeApi';
+import RecipeCard from '../components/RecipeCard';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -75,9 +76,14 @@ export default function HomeScreen() {
         data={recipes}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Text style={styles.recipeName}>
-            {item.name}
-          </Text>
+          <RecipeCard
+            recipe={item}
+            onPress={() => {
+              navigation.navigate('RecipeDetails', {
+                recipe: item,
+              });
+            }}
+          />
         )}
       />
     </View>
@@ -87,7 +93,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    backgroundColor: '#f5f5f5',
+    padding: 16,
   },
 
   center: {
@@ -124,12 +131,5 @@ const styles = StyleSheet.create({
   retryButtonText: {
     color: '#ffffff',
     fontWeight: 'bold',
-  },
-
-  recipeName: {
-    fontSize: 18,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#dddddd',
   },
 });
