@@ -1,12 +1,49 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+
+import { getRecipes } from '../services/recipeApi';
 
 export default function HomeScreen() {
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function loadRecipes() {
+    const data = await getRecipes();
+
+    setRecipes(data);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    loadRecipes();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+        <Text>Chargement des recettes</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>RecipeBox</Text>
-      <Text style={styles.subtitle}>
-        Appli de recettes
-      </Text>
+      <FlatList
+        data={recipes}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <Text style={styles.recipeName}>
+            {item.name}
+          </Text>
+        )}
+      />
     </View>
   );
 }
@@ -14,19 +51,19 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
   },
 
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
-  subtitle: {
-    fontSize: 16,
-    color: '#666666',
+  recipeName: {
+    fontSize: 18,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#dddddd',
   },
 });
