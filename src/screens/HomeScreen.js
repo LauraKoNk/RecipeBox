@@ -15,6 +15,7 @@ import { getRecipes } from '../services/recipeApi';
 export default function HomeScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState('');
+  const [difficulty, setDifficulty] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -37,9 +38,16 @@ export default function HomeScreen({ navigation }) {
     loadRecipes();
   }, []);
 
-  const filteredRecipes = recipes.filter((recipe) =>
-    recipe.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredRecipes = recipes.filter((recipe) => {
+    const matchesSearch = recipe.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const matchesDifficulty =
+      difficulty === 'All' || recipe.difficulty === difficulty;
+
+    return matchesSearch && matchesDifficulty;
+  });
 
   if (loading) {
     return (
@@ -85,6 +93,48 @@ export default function HomeScreen({ navigation }) {
         onChangeText={setSearch}
       />
 
+      <View style={styles.filters}>
+        <Pressable
+          style={[
+            styles.filterButton,
+            difficulty === 'All' && styles.activeFilterButton,
+          ]}
+          onPress={() => setDifficulty('All')}
+        >
+          <Text>Tous</Text>
+        </Pressable>
+
+        <Pressable
+          style={[
+            styles.filterButton,
+            difficulty === 'Easy' && styles.activeFilterButton,
+          ]}
+          onPress={() => setDifficulty('Easy')}
+        >
+          <Text>Facile</Text>
+        </Pressable>
+
+        <Pressable
+          style={[
+            styles.filterButton,
+            difficulty === 'Medium' && styles.activeFilterButton,
+          ]}
+          onPress={() => setDifficulty('Medium')}
+        >
+          <Text>Moyen</Text>
+        </Pressable>
+
+        <Pressable
+          style={[
+            styles.filterButton,
+            difficulty === 'Hard' && styles.activeFilterButton,
+          ]}
+          onPress={() => setDifficulty('Hard')}
+        >
+          <Text>Difficile</Text>
+        </Pressable>
+      </View>
+
       <FlatList
         data={filteredRecipes}
         keyExtractor={(item) => item.id.toString()}
@@ -98,6 +148,11 @@ export default function HomeScreen({ navigation }) {
             }}
           />
         )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>
+            Aucune recette trouvée.
+          </Text>
+        }
       />
     </View>
   );
@@ -120,11 +175,31 @@ const styles = StyleSheet.create({
   searchInput: {
     backgroundColor: '#ffffff',
     padding: 12,
-    marginBottom: 16,
+    marginBottom: 12,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#dddddd',
     fontSize: 16,
+  },
+
+  filters: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+
+  filterButton: {
+    backgroundColor: '#ffffff',
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginRight: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#dddddd',
+  },
+
+  activeFilterButton: {
+    backgroundColor: '#fed7aa',
+    borderColor: '#f97316',
   },
 
   loadingText: {
@@ -154,5 +229,11 @@ const styles = StyleSheet.create({
   retryButtonText: {
     color: '#ffffff',
     fontWeight: 'bold',
+  },
+
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 30,
+    color: '#666666',
   },
 });
