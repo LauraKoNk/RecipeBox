@@ -5,14 +5,16 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 
-import { getRecipes } from '../services/recipeApi';
 import RecipeCard from '../components/RecipeCard';
+import { getRecipes } from '../services/recipeApi';
 
 export default function HomeScreen({ navigation }) {
   const [recipes, setRecipes] = useState([]);
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -35,13 +37,17 @@ export default function HomeScreen({ navigation }) {
     loadRecipes();
   }, []);
 
+  const filteredRecipes = recipes.filter((recipe) =>
+    recipe.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   if (loading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
 
         <Text style={styles.loadingText}>
-          Chargement des recettes
+          Chargement des recettes...
         </Text>
       </View>
     );
@@ -72,8 +78,15 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Rechercher une recette..."
+        value={search}
+        onChangeText={setSearch}
+      />
+
       <FlatList
-        data={recipes}
+        data={filteredRecipes}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <RecipeCard
@@ -104,6 +117,16 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 
+  searchInput: {
+    backgroundColor: '#ffffff',
+    padding: 12,
+    marginBottom: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#dddddd',
+    fontSize: 16,
+  },
+
   loadingText: {
     marginTop: 12,
     color: '#666666',
@@ -117,7 +140,7 @@ const styles = StyleSheet.create({
 
   errorText: {
     textAlign: 'center',
-    color: '#bd3d3d',
+    color: '#666666',
     marginBottom: 20,
   },
 
