@@ -34,7 +34,14 @@ export default function MyRecipesScreen({ navigation }) {
           data={myRecipes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <RecipeCard recipe={item} />
+            <RecipeCard
+              recipe={item}
+              onPress={() => {
+                navigation.navigate('RecipeDetails', {
+                  recipe: item,
+                });
+              }}
+            />
           )}
         />
       )}

@@ -9,14 +9,40 @@ import {
 
 import { useMyRecipes } from '../context/MyRecipesContext';
 
-export default function RecipeFormScreen({ navigation }) {
-  const { addRecipe } = useMyRecipes();
+export default function RecipeFormScreen({ navigation, route }) {
+  const {
+    addRecipe,
+    updateRecipe,
+  } = useMyRecipes();
 
-  const [name, setName] = useState('');
-  const [cuisine, setCuisine] = useState('');
-  const [difficulty, setDifficulty] = useState('');
-  const [ingredients, setIngredients] = useState('');
-  const [instructions, setInstructions] = useState('');
+  const recipeToEdit = route.params
+    ? route.params.recipe
+    : null;
+
+  const [name, setName] = useState(
+    recipeToEdit ? recipeToEdit.name : ''
+  );
+
+  const [cuisine, setCuisine] = useState(
+    recipeToEdit ? recipeToEdit.cuisine : ''
+  );
+
+  const [difficulty, setDifficulty] = useState(
+    recipeToEdit ? recipeToEdit.difficulty : ''
+  );
+
+  const [ingredients, setIngredients] = useState(
+    recipeToEdit
+      ? recipeToEdit.ingredients.join(', ')
+      : ''
+  );
+
+  const [instructions, setInstructions] = useState(
+    recipeToEdit
+      ? recipeToEdit.instructions.join(' ')
+      : ''
+  );
+
   const [error, setError] = useState('');
 
   function handleSubmit() {
@@ -41,7 +67,13 @@ export default function RecipeFormScreen({ navigation }) {
       image: '',
     };
 
-    addRecipe(recipe);
+    if (recipeToEdit) {
+      recipe.id = recipeToEdit.id;
+
+      updateRecipe(recipe);
+    } else {
+      addRecipe(recipe);
+    }
 
     navigation.goBack();
   }
@@ -105,7 +137,9 @@ export default function RecipeFormScreen({ navigation }) {
         onPress={handleSubmit}
       >
         <Text style={styles.buttonText}>
-          Ajouter la recette
+          {recipeToEdit
+            ? 'Modifier la recette'
+            : 'Ajouter la recette'}
         </Text>
       </Pressable>
     </ScrollView>

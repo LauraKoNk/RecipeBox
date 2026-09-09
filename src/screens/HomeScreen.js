@@ -11,8 +11,11 @@ import {
 
 import RecipeCard from '../components/RecipeCard';
 import { getRecipes } from '../services/recipeApi';
+import { useMyRecipes } from '../context/MyRecipesContext';
 
 export default function HomeScreen({ navigation }) {
+  const { myRecipes } = useMyRecipes();
+
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState('');
   const [difficulty, setDifficulty] = useState('All');
@@ -38,7 +41,9 @@ export default function HomeScreen({ navigation }) {
     loadRecipes();
   }, []);
 
-  const filteredRecipes = recipes.filter((recipe) => {
+  const allRecipes = [...myRecipes, ...recipes];
+
+  const filteredRecipes = allRecipes.filter((recipe) => {
     const matchesSearch = recipe.name
       .toLowerCase()
       .includes(search.toLowerCase());

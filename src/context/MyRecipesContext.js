@@ -9,6 +9,7 @@ export function MyRecipesProvider({ children }) {
     const newRecipe = {
       ...recipe,
       id: Date.now(),
+      isPersonal: true,
     };
 
     setMyRecipes([...myRecipes, newRecipe]);
