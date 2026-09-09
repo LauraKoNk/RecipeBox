@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import RecipeDetailsScreen from '../screens/RecipeDetailsScreen';
+import FavoritesScreen from '../screens/FavoritesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,14 @@ export default function AppNavigator() {
         component={RecipeDetailsScreen}
         options={{
           title: 'Détail de la recette',
+        }}
+      />
+
+      <Stack.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{
+          title: 'Mes favoris',
         }}
       />
     </Stack.Navigator>
