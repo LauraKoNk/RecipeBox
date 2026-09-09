@@ -12,10 +12,18 @@ export default function RecipeCard({ recipe, onPress }) {
       style={styles.card}
       onPress={onPress}
     >
-      <Image
-        source={{ uri: recipe.image }}
-        style={styles.image}
-      />
+      {recipe.image ? (
+        <Image
+          source={{ uri: recipe.image }}
+          style={styles.image}
+        />
+      ) : (
+        <View style={styles.noImage}>
+          <Text style={styles.noImageText}>
+            Pas d'image
+          </Text>
+        </View>
+      )}
 
       <View style={styles.content}>
         <Text style={styles.title}>
@@ -54,6 +62,19 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 180,
+  },
+
+  noImage: {
+    width: '100%',
+    height: 180,
+    backgroundColor: '#dddddd',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  noImageText: {
+    color: '#666666',
+    fontSize: 16,
   },
 
   content: {

@@ -5,11 +5,20 @@ const MyRecipesContext = createContext();
 export function MyRecipesProvider({ children }) {
   const [myRecipes, setMyRecipes] = useState([]);
 
+  function addRecipe(recipe) {
+    const newRecipe = {
+      ...recipe,
+      id: Date.now(),
+    };
+
+    setMyRecipes([...myRecipes, newRecipe]);
+  }
+
   return (
     <MyRecipesContext.Provider
       value={{
         myRecipes,
-        setMyRecipes,
+        addRecipe,
       }}
     >
       {children}

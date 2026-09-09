@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -8,28 +9,35 @@ import {
 import RecipeCard from '../components/RecipeCard';
 import { useMyRecipes } from '../context/MyRecipesContext';
 
-export default function MyRecipesScreen() {
+export default function MyRecipesScreen({ navigation }) {
   const { myRecipes } = useMyRecipes();
-
-  if (myRecipes.length === 0) {
-    return (
-      <View style={styles.emptyContainer}>
-        <Text style={styles.emptyTitle}>
-          Aucune recette créée
-        </Text>
-      </View>
-    );
-  }
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={myRecipes}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <RecipeCard recipe={item} />
-        )}
-      />
+      <Pressable
+        style={styles.addButton}
+        onPress={() => navigation.navigate('RecipeForm')}
+      >
+        <Text style={styles.addButtonText}>
+          Ajouter une recette
+        </Text>
+      </Pressable>
+
+      {myRecipes.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyTitle}>
+            Aucune recette créée
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={myRecipes}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <RecipeCard recipe={item} />
+          )}
+        />
+      )}
     </View>
   );
 }
@@ -41,11 +49,23 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
+  addButton: {
+    backgroundColor: '#f573ad',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+
+  addButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 30,
   },
 
   emptyTitle: {

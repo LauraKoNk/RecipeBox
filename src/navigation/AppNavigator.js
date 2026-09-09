@@ -4,6 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import RecipeDetailsScreen from '../screens/RecipeDetailsScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import MyRecipesScreen from '../screens/MyRecipesScreen';
+import RecipeFormScreen from '../screens/RecipeFormScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,14 @@ export default function AppNavigator() {
         component={MyRecipesScreen}
         options={{
           title: 'Mes recettes',
+        }}
+      />
+
+      <Stack.Screen
+        name="RecipeForm"
+        component={RecipeFormScreen}
+        options={{
+          title: 'Ajouter une recette',
         }}
       />
     </Stack.Navigator>
