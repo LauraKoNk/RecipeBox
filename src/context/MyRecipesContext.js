@@ -27,12 +27,21 @@ export function MyRecipesProvider({ children }) {
     setMyRecipes(newRecipes);
   }
 
+  function deleteRecipe(recipeId) {
+    const newRecipes = myRecipes.filter(
+      (recipe) => recipe.id !== recipeId
+    );
+
+    setMyRecipes(newRecipes);
+  }
+
   return (
     <MyRecipesContext.Provider
       value={{
         myRecipes,
         addRecipe,
         updateRecipe,
+        deleteRecipe,
       }}
     >
       {children}

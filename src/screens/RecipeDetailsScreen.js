@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -19,7 +20,10 @@ export default function RecipeDetailsScreen({ navigation, route }) {
     isFavorite,
   } = useFavorites();
 
-  const { myRecipes } = useMyRecipes();
+  const {
+    myRecipes,
+    deleteRecipe,
+  } = useMyRecipes();
 
   let recipe = routeRecipe;
 
@@ -47,6 +51,30 @@ export default function RecipeDetailsScreen({ navigation, route }) {
     navigation.navigate('RecipeForm', {
       recipe: recipe,
     });
+  }
+
+  function handleDelete() {
+    Alert.alert(
+      'Supprimer la recette',
+      'Voulez-vous vraiment supprimer cette recette ?',
+      [
+        {
+          text: 'Annuler',
+        },
+        {
+          text: 'Supprimer',
+          onPress: () => {
+            if (favorite) {
+              removeFavorite(recipe.id);
+            }
+
+            deleteRecipe(recipe.id);
+
+            navigation.goBack();
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -89,14 +117,25 @@ export default function RecipeDetailsScreen({ navigation, route }) {
         </Pressable>
 
         {recipe.isPersonal && (
-          <Pressable
-            style={styles.editButton}
-            onPress={handleEdit}
-          >
-            <Text style={styles.buttonText}>
-              Modifier la recette
-            </Text>
-          </Pressable>
+          <>
+            <Pressable
+              style={styles.editButton}
+              onPress={handleEdit}
+            >
+              <Text style={styles.buttonText}>
+                Modifier la recette
+              </Text>
+            </Pressable>
+
+            <Pressable
+              style={styles.deleteButton}
+              onPress={handleDelete}
+            >
+              <Text style={styles.buttonText}>
+                Supprimer la recette
+              </Text>
+            </Pressable>
+          </>
         )}
 
         <Text style={styles.sectionTitle}>
@@ -179,6 +218,14 @@ const styles = StyleSheet.create({
 
   editButton: {
     backgroundColor: '#f97316',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+
+  deleteButton: {
+    backgroundColor: '#dc2626',
     padding: 12,
     borderRadius: 8,
     marginTop: 10,
