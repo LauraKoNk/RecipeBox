@@ -15,11 +15,24 @@ export function MyRecipesProvider({ children }) {
     setMyRecipes([...myRecipes, newRecipe]);
   }
 
+  function updateRecipe(updatedRecipe) {
+    const newRecipes = myRecipes.map((recipe) => {
+      if (recipe.id === updatedRecipe.id) {
+        return updatedRecipe;
+      }
+
+      return recipe;
+    });
+
+    setMyRecipes(newRecipes);
+  }
+
   return (
     <MyRecipesContext.Provider
       value={{
         myRecipes,
         addRecipe,
+        updateRecipe,
       }}
     >
       {children}

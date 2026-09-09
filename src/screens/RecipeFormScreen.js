@@ -68,9 +68,13 @@ export default function RecipeFormScreen({ navigation, route }) {
     };
 
     if (recipeToEdit) {
-      recipe.id = recipeToEdit.id;
+      const updatedRecipe = {
+        ...recipe,
+        id: recipeToEdit.id,
+        isPersonal: true,
+      };
 
-      updateRecipe(recipe);
+      updateRecipe(updatedRecipe);
     } else {
       addRecipe(recipe);
     }

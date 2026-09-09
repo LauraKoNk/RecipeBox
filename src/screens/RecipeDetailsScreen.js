@@ -8,15 +8,30 @@ import {
 } from 'react-native';
 
 import { useFavorites } from '../context/FavoritesContext';
+import { useMyRecipes } from '../context/MyRecipesContext';
 
-export default function RecipeDetailsScreen({ route }) {
-  const { recipe } = route.params;
+export default function RecipeDetailsScreen({ navigation, route }) {
+  const routeRecipe = route.params.recipe;
 
   const {
     addFavorite,
     removeFavorite,
     isFavorite,
   } = useFavorites();
+
+  const { myRecipes } = useMyRecipes();
+
+  let recipe = routeRecipe;
+
+  if (routeRecipe.isPersonal) {
+    const currentRecipe = myRecipes.find(
+      (item) => item.id === routeRecipe.id
+    );
+
+    if (currentRecipe) {
+      recipe = currentRecipe;
+    }
+  }
 
   const favorite = isFavorite(recipe.id);
 
@@ -28,12 +43,26 @@ export default function RecipeDetailsScreen({ route }) {
     }
   }
 
+  function handleEdit() {
+    navigation.navigate('RecipeForm', {
+      recipe: recipe,
+    });
+  }
+
   return (
     <ScrollView style={styles.container}>
-      <Image
-        source={{ uri: recipe.image }}
-        style={styles.image}
-      />
+      {recipe.image ? (
+        <Image
+          source={{ uri: recipe.image }}
+          style={styles.image}
+        />
+      ) : (
+        <View style={styles.noImage}>
+          <Text style={styles.noImageText}>
+            Pas d'image
+          </Text>
+        </View>
+      )}
 
       <View style={styles.content}>
         <Text style={styles.title}>
@@ -52,12 +81,23 @@ export default function RecipeDetailsScreen({ route }) {
           style={styles.favoriteButton}
           onPress={handleFavorite}
         >
-          <Text style={styles.favoriteButtonText}>
+          <Text style={styles.buttonText}>
             {favorite
               ? 'Retirer des favoris'
               : 'Ajouter aux favoris'}
           </Text>
         </Pressable>
+
+        {recipe.isPersonal && (
+          <Pressable
+            style={styles.editButton}
+            onPress={handleEdit}
+          >
+            <Text style={styles.buttonText}>
+              Modifier la recette
+            </Text>
+          </Pressable>
+        )}
 
         <Text style={styles.sectionTitle}>
           Ingrédients
@@ -100,6 +140,19 @@ const styles = StyleSheet.create({
     height: 250,
   },
 
+  noImage: {
+    width: '100%',
+    height: 250,
+    backgroundColor: '#dddddd',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  noImageText: {
+    color: '#666666',
+    fontSize: 16,
+  },
+
   content: {
     padding: 20,
   },
@@ -124,7 +177,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  favoriteButtonText: {
+  editButton: {
+    backgroundColor: '#f97316',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+
+  buttonText: {
     color: '#ffffff',
     fontWeight: 'bold',
   },
