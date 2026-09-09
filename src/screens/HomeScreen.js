@@ -90,8 +90,17 @@ export default function HomeScreen({ navigation }) {
         style={styles.favoritesButton}
         onPress={() => navigation.navigate('Favorites')}
       >
-        <Text style={styles.favoritesButtonText}>
+        <Text style={styles.buttonText}>
           Voir mes favoris
+        </Text>
+      </Pressable>
+
+      <Pressable
+        style={styles.myRecipesButton}
+        onPress={() => navigation.navigate('MyRecipes')}
+      >
+        <Text style={styles.buttonText}>
+          Mes recettes
         </Text>
       </Pressable>
 
@@ -185,11 +194,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#f573ad',
     padding: 12,
     borderRadius: 8,
+    marginBottom: 8,
+    alignItems: 'center',
+  },
+
+  myRecipesButton: {
+    backgroundColor: '#f97316',
+    padding: 12,
+    borderRadius: 8,
     marginBottom: 12,
     alignItems: 'center',
   },
 
-  favoritesButtonText: {
+  buttonText: {
     color: '#ffffff',
     fontWeight: 'bold',
   },
