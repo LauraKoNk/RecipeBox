@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  View,
 } from 'react-native';
 
 import { useMyRecipes } from '../context/MyRecipesContext';
@@ -55,7 +56,7 @@ export default function RecipeFormScreen({ navigation, route }) {
     if (
       name.trim() === '' ||
       cuisine.trim() === '' ||
-      difficulty.trim() === '' ||
+      difficulty === '' ||
       ingredients.trim() === '' ||
       instructions.trim() === ''
     ) {
@@ -114,12 +115,58 @@ export default function RecipeFormScreen({ navigation, route }) {
 
       <Text style={styles.label}>Difficulté</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Easy, Medium ou Hard"
-        value={difficulty}
-        onChangeText={setDifficulty}
-      />
+      <View style={styles.difficultyContainer}>
+        <Pressable
+          style={[
+            styles.difficultyButton,
+            difficulty === 'Easy' && styles.difficultyButtonActive,
+          ]}
+          onPress={() => setDifficulty('Easy')}
+        >
+          <Text
+            style={[
+              styles.difficultyText,
+              difficulty === 'Easy' && styles.difficultyTextActive,
+            ]}
+          >
+            Easy
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={[
+            styles.difficultyButton,
+            difficulty === 'Medium' && styles.difficultyButtonActive,
+          ]}
+          onPress={() => setDifficulty('Medium')}
+        >
+          <Text
+            style={[
+              styles.difficultyText,
+              difficulty === 'Medium' && styles.difficultyTextActive,
+            ]}
+          >
+            Medium
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={[
+            styles.difficultyButton,
+            difficulty === 'Hard' && styles.difficultyButtonActive,
+          ]}
+          onPress={() => setDifficulty('Hard')}
+        >
+          <Text
+            style={[
+              styles.difficultyText,
+              difficulty === 'Hard' && styles.difficultyTextActive,
+            ]}
+          >
+            Hard
+          </Text>
+        </Pressable>
+      </View>
 
       <Text style={styles.label}>Ingrédients</Text>
 
@@ -179,6 +226,35 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 16,
+  },
+
+  difficultyContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+
+  difficultyButton: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#dddddd',
+    borderRadius: 8,
+    alignItems: 'center',
+    marginRight: 8,
+  },
+
+  difficultyButtonActive: {
+    backgroundColor: '#f573ad',
+    borderColor: '#f573ad',
+  },
+
+  difficultyText: {
+    color: '#333333',
+  },
+
+  difficultyTextActive: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 
   textArea: {
