@@ -3,6 +3,7 @@ import {
   Image,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
@@ -51,6 +52,22 @@ export default function RecipeDetailsScreen({ navigation, route }) {
     navigation.navigate('RecipeForm', {
       recipe: recipe,
     });
+  }
+
+  async function handleShare() {
+    try {
+      await Share.share({
+        message: `${recipe.name}
+
+Ingrédients :
+${recipe.ingredients.join(', ')}
+
+Instructions :
+${recipe.instructions.join(' ')}`,
+      });
+    } catch (error) {
+      console.log('Erreur lors du partage de la recette');
+    }
   }
 
   function handleDelete() {
@@ -113,6 +130,15 @@ export default function RecipeDetailsScreen({ navigation, route }) {
             {favorite
               ? 'Retirer des favoris'
               : 'Ajouter aux favoris'}
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.shareButton}
+          onPress={handleShare}
+        >
+          <Text style={styles.buttonText}>
+            Partager la recette
           </Text>
         </Pressable>
 
@@ -213,6 +239,14 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginTop: 15,
+    alignItems: 'center',
+  },
+
+  shareButton: {
+    backgroundColor: '#2563eb',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
     alignItems: 'center',
   },
 
