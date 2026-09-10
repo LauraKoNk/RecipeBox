@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 
+import NetInfo from '@react-native-community/netinfo';
+
 import RecipeCard from '../components/RecipeCard';
 import { getRecipes } from '../services/recipeApi';
 import { useMyRecipes } from '../context/MyRecipesContext';
@@ -21,6 +23,7 @@ export default function HomeScreen({ navigation }) {
   const [difficulty, setDifficulty] = useState('All');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isConnected, setIsConnected] = useState(true);
 
   async function loadRecipes() {
     try {
@@ -30,15 +33,49 @@ export default function HomeScreen({ navigation }) {
       const data = await getRecipes();
 
       setRecipes(data);
+      setIsConnected(true);
     } catch (err) {
-      setError('Impossible de charger les recettes.');
+      const networkState = await NetInfo.fetch();
+
+      if (
+        networkState.isConnected === false ||
+        networkState.isInternetReachable === false
+      ) {
+        setIsConnected(false);
+        setRecipes([]);
+        setError('');
+      } else {
+        setError('Impossible de charger les recettes.');
+      }
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    loadRecipes();
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (
+        state.isConnected === false ||
+        state.isInternetReachable === false
+      ) {
+        setIsConnected(false);
+        setRecipes([]);
+        setError('');
+        setLoading(false);
+      }
+
+      if (
+        state.isConnected === true &&
+        state.isInternetReachable === true
+      ) {
+        setIsConnected(true);
+        loadRecipes();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const allRecipes = [...myRecipes, ...recipes];
@@ -91,6 +128,18 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      {!isConnected && (
+        <View style={styles.offlineBox}>
+          <Text style={styles.offlineTitle}>
+            Vous êtes hors ligne
+          </Text>
+
+          <Text style={styles.offlineText}>
+            Seules vos recettes personnelles sont disponibles.
+          </Text>
+        </View>
+      )}
+
       <Pressable
         style={styles.favoritesButton}
         onPress={() => navigation.navigate('Favorites')}
@@ -173,7 +222,7 @@ export default function HomeScreen({ navigation }) {
         )}
         ListEmptyComponent={
           <Text style={styles.emptyText}>
-            Aucune recette trouvée.
+            Aucune recette disponible.
           </Text>
         }
       />
@@ -193,6 +242,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+  },
+
+  offlineBox: {
+    backgroundColor: '#eeeeee',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+
+  offlineTitle: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+
+  offlineText: {
+    color: '#666666',
   },
 
   favoritesButton: {
