@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Alert,
   Image,
@@ -14,6 +15,8 @@ import { useMyRecipes } from '../context/MyRecipesContext';
 
 export default function RecipeDetailsScreen({ navigation, route }) {
   const routeRecipe = route.params.recipe;
+
+  const [imageError, setImageError] = useState(false);
 
   const {
     addFavorite,
@@ -96,15 +99,18 @@ ${recipe.instructions.join(' ')}`,
 
   return (
     <ScrollView style={styles.container}>
-      {recipe.image ? (
+      {recipe.image && !imageError ? (
         <Image
           source={{ uri: recipe.image }}
           style={styles.image}
+          onError={() => setImageError(true)}
         />
       ) : (
         <View style={styles.noImage}>
           <Text style={styles.noImageText}>
-            Pas d'image
+            {recipe.isPersonal
+              ? "Pas d'image"
+              : 'Image indisponible'}
           </Text>
         </View>
       )}

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Image,
   Pressable,
@@ -7,20 +8,25 @@ import {
 } from 'react-native';
 
 export default function RecipeCard({ recipe, onPress }) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <Pressable
       style={styles.card}
       onPress={onPress}
     >
-      {recipe.image ? (
+      {recipe.image && !imageError ? (
         <Image
           source={{ uri: recipe.image }}
           style={styles.image}
+          onError={() => setImageError(true)}
         />
       ) : (
         <View style={styles.noImage}>
           <Text style={styles.noImageText}>
-            Pas d'image
+            {recipe.isPersonal
+              ? "Pas d'image"
+              : 'Image indisponible'}
           </Text>
         </View>
       )}
