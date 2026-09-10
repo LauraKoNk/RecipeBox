@@ -50,6 +50,27 @@ export function FavoritesProvider({ children }) {
     }
   }
 
+  async function updateFavorite(updatedRecipe) {
+    const newFavorites = favorites.map((recipe) => {
+      if (recipe.id === updatedRecipe.id) {
+        return updatedRecipe;
+      }
+
+      return recipe;
+    });
+
+    setFavorites(newFavorites);
+
+    try {
+      await AsyncStorage.setItem(
+        'favorites',
+        JSON.stringify(newFavorites)
+      );
+    } catch (error) {
+      console.log('Erreur lors de la modification du favori');
+    }
+  }
+
   function isFavorite(recipeId) {
     return favorites.some(
       (recipe) => recipe.id === recipeId
@@ -66,6 +87,7 @@ export function FavoritesProvider({ children }) {
         favorites,
         addFavorite,
         removeFavorite,
+        updateFavorite,
         isFavorite,
       }}
     >

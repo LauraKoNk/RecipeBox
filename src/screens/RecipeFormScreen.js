@@ -8,12 +8,18 @@ import {
 } from 'react-native';
 
 import { useMyRecipes } from '../context/MyRecipesContext';
+import { useFavorites } from '../context/FavoritesContext';
 
 export default function RecipeFormScreen({ navigation, route }) {
   const {
     addRecipe,
     updateRecipe,
   } = useMyRecipes();
+
+  const {
+    isFavorite,
+    updateFavorite,
+  } = useFavorites();
 
   const recipeToEdit = route.params
     ? route.params.recipe
@@ -75,6 +81,10 @@ export default function RecipeFormScreen({ navigation, route }) {
       };
 
       updateRecipe(updatedRecipe);
+
+      if (isFavorite(updatedRecipe.id)) {
+        updateFavorite(updatedRecipe);
+      }
     } else {
       addRecipe(recipe);
     }
