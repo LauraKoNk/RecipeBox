@@ -66,24 +66,6 @@ Sans connexion, les recettes venant de l'API ne sont plus disponibles sur l'accu
 
 ## Installation
 
-Cloner le projet puis se placer dans son dossier.
-
-Installer les dépendances :
-
-```bash
-npm install
-```
-
-Ensuite lancer le projet :
-
-```bash
-npx expo start
-```
-
-L'application peut ensuite être lancée avec Expo Go sur un téléphone ou avec un émulateur Android/iOS.
-
-## Installation
-
 ### Prérequis
 
 Avant de lancer le projet, il faut avoir installé :
